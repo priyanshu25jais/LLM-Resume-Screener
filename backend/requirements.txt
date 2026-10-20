@@ -1,0 +1,16 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+sqlalchemy>=2.0
+pydantic>=2.6
+python-dotenv>=1.0
+httpx>=0.27
+pdfplumber>=0.11
+pypdf>=4.0
+python-docx>=1.1
+scikit-learn>=1.4
+numpy>=1.26
+pytest>=8.0
+
+# Optional: local semantic embeddings without an API key (downloads ~90 MB model on first run)
+# sentence-transformers>=3.0

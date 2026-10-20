@@ -1,0 +1,29 @@
+Python Backend Developer
+Location: Noida (Hybrid) | Experience: 2-5 years | Employment: Full-time
+
+About the role
+We are a fintech startup building a payments reconciliation platform used by 300+ merchants. We are looking for a Python Backend Developer who will design, build and scale the APIs that power our product.
+
+Responsibilities
+- Design and build REST APIs and background services in Python
+- Model data and write efficient queries in PostgreSQL
+- Write unit and integration tests and keep code quality high
+- Containerise services and deploy them to the cloud
+- Work with frontend engineers and product managers in two-week sprints
+- Monitor production systems and fix performance issues
+
+Requirements
+- 2+ years of professional experience as a backend developer
+- Strong Python skills
+- Hands-on experience with FastAPI or Django
+- Experience designing REST APIs
+- Good knowledge of SQL and PostgreSQL
+- Comfortable with Git and code reviews
+- B.Tech / B.E. in Computer Science or a related field
+
+Nice to have
+- Docker and Kubernetes
+- AWS (EC2, S3, RDS)
+- Redis or Celery for caching and background jobs
+- CI/CD pipelines (GitHub Actions or Jenkins)
+- Experience with Kafka or other message queues

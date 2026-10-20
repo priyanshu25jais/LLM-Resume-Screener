@@ -1,0 +1,20 @@
+Ishita Banerjee
+Data Analyst | ishita.b@example.com | +91 98300 77889 | Kolkata
+
+SUMMARY
+Data analyst with 2 years of experience turning sales data into dashboards and insights.
+
+EXPERIENCE
+Data Analyst, Eastern Retail Pvt Ltd, Kolkata | Sep 2024 - Present
+- Built Power BI and Tableau dashboards tracking sales across 120 stores
+- Wrote SQL queries in MySQL for weekly reporting; automated Excel reports with Python (pandas)
+- Performed exploratory data analysis and basic regression analysis for pricing decisions
+
+EDUCATION
+B.Com (Hons), St. Xavier's College, Kolkata, 2024
+
+CERTIFICATIONS
+Google Data Analytics Professional Certificate, 2024
+
+SKILLS
+SQL, MySQL, Excel, Power BI, Tableau, Python, pandas, Data Visualization, Statistics (basic)

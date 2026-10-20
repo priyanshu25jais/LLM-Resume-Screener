@@ -1,0 +1,19 @@
+Arjun Reddy
+arjun.reddy@example.com | +91 91234 56789 | github.com/arjunreddy | Hyderabad
+
+OBJECTIVE
+Computer science graduate looking for an entry-level software developer role.
+
+EDUCATION
+B.Tech, Computer Science and Engineering, JNTU Hyderabad, 2026 (CGPA 7.6)
+
+SKILLS
+C, C++, Python (basics), Data Structures and Algorithms, OOP, SQL, MySQL, HTML, CSS, Git
+
+PROJECTS
+Library Management API: Flask REST API with MySQL for issuing and returning books
+Student Result Portal: HTML, CSS and PHP website for my college
+Solved 350+ problems on LeetCode
+
+ACHIEVEMENTS
+Smart India Hackathon 2025 finalist

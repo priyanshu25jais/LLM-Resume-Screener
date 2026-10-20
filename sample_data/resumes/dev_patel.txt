@@ -1,0 +1,20 @@
+Dev Patel
+Full Stack Engineer | dev.patel@example.com | +91 99887 11223 | github.com/devpatel | Ahmedabad
+
+SUMMARY
+Full-stack engineer with 6 years of experience shipping React and Node.js products end to end.
+
+EXPERIENCE
+Lead Full Stack Engineer, CloudCart, Ahmedabad | Mar 2022 - Present
+- Lead a team of 5 building a React and TypeScript storefront and Node.js (NestJS) GraphQL APIs
+- Built a design system of 60 components with Storybook; Jest and Cypress tests
+- PostgreSQL and Redis on AWS; Docker and GitHub Actions CI/CD
+
+Full Stack Developer, WebMakers, Ahmedabad | Jul 2020 - Feb 2022
+- Built React and Next.js sites and Express.js REST APIs with MongoDB
+
+EDUCATION
+B.E. Information Technology, Gujarat Technological University, 2020
+
+SKILLS
+JavaScript, TypeScript, React, Next.js, Redux, HTML, CSS, Tailwind CSS, Node.js, Express, NestJS, GraphQL, REST APIs, PostgreSQL, MongoDB, Redis, AWS, Docker, Jest, Cypress, Git

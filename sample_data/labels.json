@@ -1,0 +1,21 @@
+{
+  "_about": "Human relevance labels for the sample resumes: 2 = strong fit, 1 = partial fit, 0 = poor fit. Used by backend/scripts/evaluate.py.",
+  "python_backend_developer.txt": {
+    "aarav_sharma.pdf": 2, "neha_kapoor.docx": 2, "priya_nair.docx": 2,
+    "vikram_singh.docx": 1, "rohan_verma.pdf": 1, "dev_patel.txt": 1, "arjun_reddy.txt": 1,
+    "ananya_gupta.pdf": 0, "karan_mehta.docx": 0, "sneha_iyer.pdf": 0, "meera_joshi.pdf": 0,
+    "fatima_khan.docx": 0, "ishita_banerjee.txt": 0, "sameer_ali.txt": 0, "tanya_malhotra.txt": 0
+  },
+  "react_frontend_developer.txt": {
+    "sneha_iyer.pdf": 2, "dev_patel.txt": 2, "karan_mehta.docx": 1, "meera_joshi.pdf": 1,
+    "aarav_sharma.pdf": 0, "neha_kapoor.docx": 0, "priya_nair.docx": 0, "vikram_singh.docx": 0,
+    "rohan_verma.pdf": 0, "arjun_reddy.txt": 0, "ananya_gupta.pdf": 0, "fatima_khan.docx": 0,
+    "ishita_banerjee.txt": 0, "sameer_ali.txt": 0, "tanya_malhotra.txt": 0
+  },
+  "data_scientist.txt": {
+    "ananya_gupta.pdf": 2, "vikram_singh.docx": 2, "ishita_banerjee.txt": 1,
+    "aarav_sharma.pdf": 0, "neha_kapoor.docx": 0, "priya_nair.docx": 0, "rohan_verma.pdf": 0,
+    "dev_patel.txt": 0, "arjun_reddy.txt": 0, "karan_mehta.docx": 0, "sneha_iyer.pdf": 0,
+    "meera_joshi.pdf": 0, "fatima_khan.docx": 0, "sameer_ali.txt": 0, "tanya_malhotra.txt": 0
+  }
+}

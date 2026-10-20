@@ -1,0 +1,24 @@
+Data Scientist
+Location: Gurugram | Experience: 2-4 years
+
+Our retail analytics team builds demand-forecasting and customer-insight models for 1,200 stores. We are hiring a Data Scientist to build, evaluate and deploy machine learning models, and increasingly to apply LLMs to customer feedback.
+
+Responsibilities
+- Explore large datasets and turn business questions into analyses
+- Build, validate and deploy machine learning models
+- Design experiments and measure impact with sound statistics
+- Communicate findings to business stakeholders with clear visualisations
+
+Required skills
+- 2+ years of hands-on experience in data science or machine learning
+- Python with pandas, NumPy and scikit-learn
+- Strong SQL
+- Solid statistics: hypothesis testing, regression, probability
+- Machine learning: model selection, feature engineering, evaluation
+
+Preferred
+- Deep learning with TensorFlow or PyTorch
+- NLP and LLMs (Hugging Face, prompt engineering, RAG)
+- Experience deploying models with Docker or on AWS
+- Tableau or Power BI dashboards
+- Master's degree in Statistics, Computer Science or a related field

@@ -1,0 +1,26 @@
+React Frontend Developer
+Location: Bengaluru (Remote friendly) | Experience: 2+ years
+
+We build a SaaS analytics dashboard used by marketing teams. You will own the user interface: fast, accessible and pixel-perfect screens that turn data into decisions.
+
+What you will do
+- Build reusable UI components with React and TypeScript
+- Turn Figma designs into responsive, accessible pages
+- Manage application state and integrate REST APIs
+- Write tests for components and critical user flows
+- Improve page performance and Core Web Vitals
+
+Must have
+- 2+ years of experience building production web apps
+- Strong JavaScript (ES6+) and TypeScript
+- React (hooks, context) and modern HTML and CSS
+- Experience consuming REST APIs
+- Git
+
+Good to have
+- Next.js
+- Redux or other state management libraries
+- Tailwind CSS
+- Testing with Jest or React Testing Library
+- Figma and an eye for design
+- Web accessibility (WCAG)

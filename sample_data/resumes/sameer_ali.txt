@@ -1,0 +1,19 @@
+Sameer Ali
+QA Automation Engineer | sameer.ali@example.com | 98765 12345 | Noida
+
+SUMMARY
+QA engineer with 3 years of experience in test automation for web applications.
+
+EXPERIENCE
+QA Automation Engineer, TestRight Solutions, Noida | Aug 2023 - Present
+- Built Selenium WebDriver frameworks in Java with TestNG for 3 web products
+- API testing with Postman and REST Assured; tracked defects in Jira
+
+Software Tester, Apex Infotech, Noida | Jun 2022 - Jul 2023
+- Manual testing of web and mobile apps; wrote test cases and bug reports
+
+EDUCATION
+BCA, Amity University, Noida, 2022
+
+SKILLS
+Selenium, Java, TestNG, Postman, API Testing, SQL, Jira, Agile, Manual Testing
