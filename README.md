@@ -5,6 +5,8 @@ B.Tech project by Priyanshu Jaiswal, Computer Science.
 A web app that screens resumes against a job description. It scores each candidate out of 100 with
 an LLM (Gemini, with Groq as backup), shows why they got that score, and ranks them.
 
+**Live demo:** https://resume-scanner-gmj7.onrender.com (free hosting, may take a minute to wake up)
+
 ## Features
 
 - Reads the job description and pulls out must-have skills, nice-to-have skills and experience.
