@@ -2,7 +2,6 @@ import { SIGNALS } from '../api.js'
 
 const CUTS = [45, 60, 75] // recommendation band boundaries
 
-// Stacked bar: each coloured part is one weighted signal
 export function contributions(c, weights) {
   return SIGNALS.map((s) => ({ ...s, value: 100 * (weights?.[s.key] ?? 0) * (c[s.field] ?? 0) }))
 }

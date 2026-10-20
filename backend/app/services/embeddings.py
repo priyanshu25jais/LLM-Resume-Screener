@@ -19,7 +19,7 @@ MAX_CHARS = 8000
 class Embedder:
     name = "base"
     model = ""
-    lo, hi = 0.0, 1.0  # calibration range for raw cosine
+    lo, hi = 0.0, 1.0
     vector_based = True
 
     @property
@@ -83,7 +83,7 @@ class LocalEmbedder(Embedder):
     name, lo, hi = "local", 0.15, 0.70
 
     def __init__(self):
-        from sentence_transformers import SentenceTransformer  # optional dependency
+        from sentence_transformers import SentenceTransformer
         self.model = settings.LOCAL_EMBED_MODEL
         self._m = SentenceTransformer(self.model)
 
@@ -92,7 +92,6 @@ class LocalEmbedder(Embedder):
 
 
 class TfidfEmbedder(Embedder):
-    """Offline fallback: cosine similarity of word counts, no model needed."""
     name, model, lo, hi = "tfidf", "sklearn", 0.08, 0.42
     vector_based = False
 
@@ -143,7 +142,7 @@ def _build() -> Embedder:
             return OllamaEmbedder()
         if choice == "local":
             return LocalEmbedder()
-    except Exception as exc:  # e.g. sentence-transformers not installed
+    except Exception as exc:
         log.info("embedding backend '%s' unavailable (%s); using TF-IDF", choice, exc)
     return TfidfEmbedder()
 
@@ -159,11 +158,6 @@ def get_embedder() -> Embedder:
     return _embedder
 
 
-def set_embedder(e: Embedder | None) -> None:
-    global _embedder
-    _embedder = e
-
-
 def cosine(a: list[float], b: list[float]) -> float:
     dot = sum(x * y for x, y in zip(a, b))
     na = math.sqrt(sum(x * x for x in a))
@@ -176,7 +170,6 @@ def calibrate(raw: float, e: Embedder) -> float:
 
 
 def _cached_embed(texts: list[str], db=None) -> list[list[float]]:
-    """Embed texts, re-using vectors stored in the embedding_cache table."""
     e = get_embedder()
     keys = [hashlib.sha256(f"{e.label}|{t[:MAX_CHARS]}".encode()).hexdigest() for t in texts]
     found: dict[str, list[float]] = {}
@@ -213,7 +206,6 @@ def _trip(exc: Exception) -> None:
 
 
 def semantic_similarity(jd_text: str, resume_text: str, db=None) -> tuple[float, float, str]:
-    """Return (raw cosine, calibrated 0..1, backend used) between a job description and a resume."""
     e = get_embedder()
     if not e.vector_based:
         raw = e.pair_similarity(jd_text, resume_text)
@@ -223,7 +215,7 @@ def semantic_similarity(jd_text: str, resume_text: str, db=None) -> tuple[float,
             va, vb = _cached_embed([jd_text, resume_text], db)
             raw = cosine(va, vb)
             return round(raw, 4), round(calibrate(raw, e), 4), e.label
-        except Exception as exc:  # network/model/quota failure
+        except Exception as exc:
             _trip(exc)
     tf = TfidfEmbedder()
     raw = tf.pair_similarity(jd_text, resume_text)
@@ -231,7 +223,6 @@ def semantic_similarity(jd_text: str, resume_text: str, db=None) -> tuple[float,
 
 
 def rank_passages(query: str, passages: list[str], db=None) -> list[float]:
-    """Similarity of a question to each passage (for retrieval in Q&A)."""
     e = get_embedder()
     if not e.vector_based:
         return e.rank(query, passages)
@@ -245,7 +236,6 @@ def rank_passages(query: str, passages: list[str], db=None) -> list[float]:
 
 
 def chunk_text(text: str, size: int = 700) -> list[str]:
-    """Split a resume into passages along line breaks; consecutive passages share one line."""
     lines = [ln.strip() for ln in re.split(r"\n+", text) if ln.strip()]
     chunks, cur = [], []
     for ln in lines:

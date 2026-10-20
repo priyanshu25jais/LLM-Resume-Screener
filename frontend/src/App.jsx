@@ -27,7 +27,7 @@ function readTheme() {
   try {
     const saved = localStorage.getItem('shortlist-theme')
     if (saved === 'dark' || saved === 'light') return saved
-  } catch { /* storage blocked */ }
+  } catch {}
   return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
@@ -35,7 +35,7 @@ function ThemeToggle() {
   const [theme, setTheme] = useState(readTheme)
   useEffect(() => {
     document.documentElement.dataset.theme = theme
-    try { localStorage.setItem('shortlist-theme', theme) } catch { /* ignore */ }
+    try { localStorage.setItem('shortlist-theme', theme) } catch {}
   }, [theme])
   const dark = theme === 'dark'
   return (

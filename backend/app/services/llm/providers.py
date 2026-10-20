@@ -17,8 +17,6 @@ RETRY_STATUS = {408, 429, 500, 502, 503, 504}
 
 
 class _RateLimiter:
-    """Spaces calls evenly so free-tier requests-per-minute limits are never crossed."""
-
     def __init__(self):
         self._lock: asyncio.Lock | None = None
         self._next = 0.0
@@ -40,7 +38,6 @@ _limiter = _RateLimiter()
 
 
 def _retry_after(resp: httpx.Response) -> float | None:
-    # Seconds the provider asked us to wait (Retry-After header or Gemini's RetryInfo)
     try:
         if resp.headers.get("retry-after"):
             return float(resp.headers["retry-after"])
@@ -53,7 +50,6 @@ def _retry_after(resp: httpx.Response) -> float | None:
 
 
 async def _post_json(url: str, *, headers: dict, payload: dict, attempts: int = 4, patient: bool = True) -> dict:
-    """POST with back-off on rate limits and server errors; impatient callers get RateLimitError at once."""
     delay = 2.0
     last = ""
     if not patient:
@@ -128,8 +124,6 @@ class GeminiClient(LLMClient):
 
 
 class OpenAICompatibleClient(LLMClient):
-    """OpenAI and any OpenAI-compatible API (Groq, xAI, LM Studio)."""
-
     OPTIONAL = ("temperature", "max_completion_tokens", "reasoning_effort")
 
     def __init__(self, name: str, api_key: str, model: str, base_url: str):
@@ -146,7 +140,7 @@ class OpenAICompatibleClient(LLMClient):
         if settings.LLM_MAX_OUTPUT_TOKENS > 0:
             payload["max_completion_tokens"] = settings.LLM_MAX_OUTPUT_TOKENS
         if settings.LLM_REASONING_EFFORT:
-            payload["reasoning_effort"] = settings.LLM_REASONING_EFFORT  # fewer hidden "thinking" tokens
+            payload["reasoning_effort"] = settings.LLM_REASONING_EFFORT
         for key in self._unsupported:
             payload.pop(key, None)
         if json_mode:
@@ -195,7 +189,6 @@ class OllamaClient(LLMClient):
 
 
 class OfflineClient(LLMClient):
-    """No model: the evaluator and JD analyser use their rule-based versions."""
     name = "offline"
     model = "rule-based"
 
@@ -211,8 +204,6 @@ _answered_by: contextvars.ContextVar[str] = contextvars.ContextVar("answered_by"
 
 
 class FallbackClient(LLMClient):
-    """Tries the main provider, then each backup; a provider out of quota is skipped until it resets."""
-
     def __init__(self, clients: list[LLMClient]):
         self.clients = clients
         self.name, self.model = clients[0].name, clients[0].model
@@ -323,9 +314,3 @@ def get_llm() -> LLMClient:
             _client = OfflineClient()
         log.info("LLM provider: %s", _client.label)
     return _client
-
-
-def set_llm(client: LLMClient | None) -> None:
-    # Used by tests and the evaluation script
-    global _client
-    _client = client

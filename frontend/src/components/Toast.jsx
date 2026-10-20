@@ -2,7 +2,6 @@ import { createContext, useCallback, useContext, useState } from 'react'
 
 const ToastContext = createContext(() => {})
 
-// Small popup messages like "Notes saved"
 export function ToastProvider({ children }) {
   const [items, setItems] = useState([])
   const show = useCallback((text) => {

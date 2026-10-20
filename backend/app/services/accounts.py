@@ -46,7 +46,6 @@ def active_admins(db) -> int:
 
 
 def create_admin(db, name: str, email: str, password: str) -> User:
-    """Used by scripts/create_admin.py: the only way to make an admin."""
     email = email.strip().lower()
     if db.query(User).filter(User.email == email).first():
         raise ValueError("an account with this email already exists")
@@ -142,7 +141,6 @@ def demote(db, admin: User, uid: int, reason: str) -> User:
 
 
 def _give_orphan_jobs(db, user: User) -> None:
-    # Jobs made before accounts existed go to the first recruiter who is approved
     if user.role != "recruiter":
         return
     n = db.query(Job).filter(Job.owner_id.is_(None)).update({"owner_id": user.id})
@@ -157,7 +155,6 @@ def _aware(dt: datetime | None) -> datetime | None:
 
 
 def purge_due(db) -> int:
-    """Permanently remove deleted recruiters' data once the grace period is over, and old audit rows."""
     now = utcnow()
     cutoff = now - timedelta(days=max(0, settings.DELETION_GRACE_DAYS))
     purged = 0
@@ -168,7 +165,7 @@ def purge_due(db) -> int:
         resumes = sum(len(j.candidates) for j in jobs)
         for job in jobs:
             shutil.rmtree(settings.UPLOAD_DIR / f"job_{job.id}", ignore_errors=True)
-            db.delete(job)  # candidates go with it
+            db.delete(job)
         revoke_sessions(db, user.id)
         # Keep an anonymous row so audit entries still point at a real id
         user.name, user.email = f"Deleted user {user.id}", f"deleted-{user.id}@invalid"

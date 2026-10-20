@@ -32,7 +32,6 @@ def record_usage(input_tokens: int, output_tokens: int) -> None:
 
 
 def estimate_tokens(text: str) -> int:
-    # Rough rule for English text: about 4 characters per token
     return max(1, len(text or "") // 4)
 
 
@@ -49,7 +48,7 @@ class RateLimitError(LLMError):
 class LLMClient:
     name: str = "base"
     model: str = ""
-    patient: bool = True  # False when a backup provider can take over instead of waiting
+    patient: bool = True
 
     @property
     def label(self) -> str:
@@ -73,7 +72,6 @@ class LLMClient:
 
     async def complete_json(self, system: str, user: str, schema: type[T], *,
                             retries: int = 2, temperature: float | None = None) -> T:
-        """Ask the model and parse the reply into `schema`; on bad JSON, ask again with the error."""
         prompt = user
         last_err: Exception | None = None
         for attempt in range(retries + 1):
@@ -81,7 +79,7 @@ class LLMClient:
             calls_before = usage["calls"] if usage else 0
             raw = await self.complete(system, prompt, json_mode=True, temperature=temperature)
             if usage is not None and usage["calls"] == calls_before:
-                record_usage(estimate_tokens(system + prompt), estimate_tokens(raw))  # provider gave no counts
+                record_usage(estimate_tokens(system + prompt), estimate_tokens(raw))
             try:
                 return schema.model_validate(extract_json(raw))
             except (ValueError, ValidationError) as exc:
@@ -95,7 +93,6 @@ class LLMClient:
 
 
 def extract_json(raw: str) -> dict:
-    """Pull the first JSON object out of a reply, even inside ```json fences or extra text."""
     if raw is None:
         raise ValueError("empty reply")
     text = raw.strip()

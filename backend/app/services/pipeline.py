@@ -101,7 +101,6 @@ async def process_batch(candidate_ids: list[int]) -> None:
 
 
 def rescore_job(db, job: Job) -> int:
-    """Re-apply the job's weights to already-computed signals (no new LLM calls)."""
     n = 0
     for c in job.candidates:
         if c.status != "done":

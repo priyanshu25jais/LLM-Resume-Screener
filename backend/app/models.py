@@ -29,15 +29,13 @@ class User(Base):
     purged_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
-    jobs: Mapped[list["Job"]] = relationship(back_populates="owner")
-
 
 class UserSession(Base):
     __tablename__ = "sessions"
 
-    token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)  # we keep only a hash of the cookie
+    token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
-    expires_at: Mapped[int] = mapped_column(Integer)  # unix time
+    expires_at: Mapped[int] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
     user: Mapped[User] = relationship()
@@ -49,14 +47,13 @@ class Job(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     title: Mapped[str] = mapped_column(String(200))
     description: Mapped[str] = mapped_column(Text)
-    requirements: Mapped[dict] = mapped_column(JSON, default=dict)  # structured JD (LLM output)
-    weights: Mapped[dict] = mapped_column(JSON, default=dict)  # scoring weights
+    requirements: Mapped[dict] = mapped_column(JSON, default=dict)
+    weights: Mapped[dict] = mapped_column(JSON, default=dict)
     blind_mode: Mapped[bool] = mapped_column(Boolean, default=True)
     analysed_by: Mapped[str] = mapped_column(String(80), default="")
     owner_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
-    owner: Mapped[User | None] = relationship(back_populates="jobs")
     candidates: Mapped[list["Candidate"]] = relationship(
         back_populates="job", cascade="all, delete-orphan", order_by="Candidate.id"
     )
@@ -67,7 +64,7 @@ class Candidate(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     job_id: Mapped[int] = mapped_column(ForeignKey("jobs.id", ondelete="CASCADE"), index=True)
-    seq: Mapped[int] = mapped_column(Integer, default=0)  # 1, 2, 3 ... within a job (blind label)
+    seq: Mapped[int] = mapped_column(Integer, default=0)
 
     filename: Mapped[str] = mapped_column(String(255))
     file_path: Mapped[str] = mapped_column(String(500))
@@ -76,7 +73,6 @@ class Candidate(Base):
     status: Mapped[str] = mapped_column(String(20), default="queued")  # queued|processing|done|failed
     error: Mapped[str] = mapped_column(Text, default="")
 
-    # Extracted profile
     name: Mapped[str] = mapped_column(String(200), default="")
     email: Mapped[str] = mapped_column(String(200), default="")
     phone: Mapped[str] = mapped_column(String(50), default="")
@@ -87,7 +83,6 @@ class Candidate(Base):
     skills: Mapped[list] = mapped_column(JSON, default=list)
     years_experience: Mapped[float] = mapped_column(Float, default=0.0)
 
-    # Scores (0-1 for signals, 0-100 for final)
     llm_score: Mapped[float] = mapped_column(Float, default=0.0)
     skill_score: Mapped[float] = mapped_column(Float, default=0.0)
     semantic_score: Mapped[float] = mapped_column(Float, default=0.0)
@@ -99,7 +94,6 @@ class Candidate(Base):
     evaluation: Mapped[dict] = mapped_column(JSON, default=dict)
     flags: Mapped[list] = mapped_column(JSON, default=list)
 
-    # Recruiter workflow
     decision: Mapped[str] = mapped_column(String(20), default="pending")  # pending|shortlisted|on_hold|rejected
     notes: Mapped[str] = mapped_column(Text, default="")
 
@@ -112,7 +106,6 @@ class Candidate(Base):
 
 
 class LLMCache(Base):
-    """Caches LLM responses so an identical prompt is never paid for twice."""
     __tablename__ = "llm_cache"
 
     key: Mapped[str] = mapped_column(String(64), primary_key=True)

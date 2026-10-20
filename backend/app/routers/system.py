@@ -52,7 +52,6 @@ def demo_options():
 @router.post("/demo/{key}", response_model=JobOut, status_code=201)
 async def load_demo(key: str, background: BackgroundTasks, db: Session = Depends(get_db),
                     user: User = Depends(recruiter_user)):
-    """Create a job from a sample JD and screen all sample resumes against it."""
     if key not in DEMO_JOBS:
         raise HTTPException(404, f"Unknown demo '{key}'")
     title, fname = DEMO_JOBS[key]

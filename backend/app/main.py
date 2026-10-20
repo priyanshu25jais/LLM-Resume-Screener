@@ -26,11 +26,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name
 async def lifespan(_app: FastAPI):
     init_db()
     with SessionLocal() as db:
-        purge_due(db)  # remove deleted accounts whose grace period is over
+        purge_due(db)
         if not db.query(User).filter(User.role == "admin", User.status == "active").first():
             logging.getLogger("screener").warning(
                 "No admin account yet. Create one from the backend folder: python scripts/create_admin.py")
-    get_llm()  # log which provider is active
+    get_llm()
     get_embedder()
     yield
 

@@ -26,7 +26,6 @@ def user_out(user: User) -> UserOut:
 
 @router.get("/options")
 def options():
-    # What the login page should offer
     return {"allow_registration": settings.ALLOW_REGISTRATION, "require_approval": settings.REQUIRE_APPROVAL,
             "demo_login": settings.DEMO_LOGIN}
 

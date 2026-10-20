@@ -6,7 +6,6 @@ from functools import lru_cache
 
 # canonical name -> aliases (case-insensitive unless prefixed with "cs:")
 SKILL_TAXONOMY: dict[str, list[str]] = {
-    # Programming languages
     "Python": ["python", "python3", "py"],
     "Java": ["java", "core java", "java 8", "java 11", "java 17"],
     "JavaScript": ["javascript", "js", "ecmascript", "es6", "vanilla js"],
@@ -26,7 +25,6 @@ SKILL_TAXONOMY: dict[str, list[str]] = {
     "MATLAB": ["matlab"],
     "Bash": ["bash", "shell scripting", "shell script", "unix shell"],
     "SQL": ["sql", "t-sql", "pl/sql", "plsql", "structured query language"],
-    # Frontend
     "HTML": ["html", "html5"],
     "CSS": ["css", "css3"],
     "React": ["cs:React", "reactjs", "react.js", "react js"],
@@ -46,7 +44,6 @@ SKILL_TAXONOMY: dict[str, list[str]] = {
     "Web Accessibility": ["web accessibility", "accessibility", "wcag", "a11y", "aria"],
     "Figma": ["figma"],
     "Adobe XD": ["adobe xd"],
-    # Backend / frameworks
     "Node.js": ["node.js", "nodejs", "node js", "cs:Node"],
     "Express.js": ["cs:Express", "express.js", "expressjs"],
     "Django": ["django", "django rest framework", "drf"],
@@ -66,7 +63,6 @@ SKILL_TAXONOMY: dict[str, list[str]] = {
     "Celery": ["celery"],
     "OAuth/JWT": ["oauth", "oauth2", "jwt", "json web token"],
     "System Design": ["system design", "distributed systems", "scalable systems"],
-    # Databases
     "PostgreSQL": ["postgresql", "postgres", "psql"],
     "MySQL": ["mysql", "mariadb"],
     "SQLite": ["sqlite"],
@@ -78,7 +74,6 @@ SKILL_TAXONOMY: dict[str, list[str]] = {
     "DynamoDB": ["dynamodb"],
     "Elasticsearch": ["elasticsearch", "elastic search", "opensearch"],
     "Firebase": ["firebase", "firestore"],
-    # Cloud / DevOps
     "AWS": ["aws", "amazon web services", "ec2", "aws s3", "aws lambda"],
     "Azure": ["azure", "microsoft azure"],
     "GCP": ["gcp", "google cloud", "google cloud platform"],
@@ -96,7 +91,6 @@ SKILL_TAXONOMY: dict[str, list[str]] = {
     "Kafka": ["kafka", "apache kafka"],
     "RabbitMQ": ["rabbitmq"],
     "Prometheus": ["prometheus", "grafana"],
-    # Data / ML / AI
     "Machine Learning": ["machine learning", "ml", "ml models", "predictive modeling", "predictive modelling"],
     "Deep Learning": ["deep learning", "neural networks", "neural network", "cnn", "rnn", "lstm"],
     "NLP": ["nlp", "natural language processing", "text classification", "named entity recognition"],
@@ -131,12 +125,10 @@ SKILL_TAXONOMY: dict[str, list[str]] = {
     "Excel": ["cs:Excel", "ms excel", "microsoft excel", "advanced excel", "vlookup", "pivot tables"],
     "Jupyter": ["jupyter", "jupyter notebook", "google colab", "colab"],
     "AWS SageMaker": ["sagemaker", "aws sagemaker"],
-    # Mobile
     "Android": ["android", "android studio"],
     "iOS": ["ios", "xcode"],
     "React Native": ["react native", "react-native"],
     "Flutter": ["flutter"],
-    # Testing / QA
     "Unit Testing": ["unit testing", "unit tests", "tdd", "test driven development"],
     "pytest": ["pytest", "unittest"],
     "Jest": ["jest", "react testing library", "vitest"],
@@ -144,7 +136,6 @@ SKILL_TAXONOMY: dict[str, list[str]] = {
     "Selenium": ["selenium", "selenium webdriver"],
     "JUnit": ["junit", "testng", "mockito"],
     "Postman": ["postman", "api testing"],
-    # Practices / tools
     "Agile": ["agile", "scrum", "kanban", "sprint"],
     "Jira": ["jira", "confluence"],
     "Data Structures & Algorithms": ["data structures", "algorithms", "dsa", "data structures and algorithms"],
@@ -155,7 +146,6 @@ SKILL_TAXONOMY: dict[str, list[str]] = {
     "SEO": ["seo", "search engine optimization", "search engine optimisation"],
     "Digital Marketing": ["digital marketing", "google ads", "social media marketing",
                           "email marketing", "content marketing"],
-    # Soft skills
     "Leadership": ["team lead", "led a team", "leadership", "mentored", "mentoring"],
     "Communication": ["communication skills", "stakeholder management", "presentation skills"],
 }
@@ -237,14 +227,12 @@ def _key(s: str) -> str:
 
 
 def normalize_skill(name: str) -> str:
-    """Map any spelling of a skill to its canonical name (unknown skills are kept, tidied)."""
     name = (name or "").strip().strip(".,;:")
     if not name:
         return ""
     hit = _alias_index().get(_key(name))
     if hit:
         return hit
-    # "React (Hooks)" / "AWS (EC2, S3)" -> try the part before the bracket
     head = re.split(r"[(\[]", name)[0].strip()
     if head and head != name:
         hit = _alias_index().get(_key(head))
@@ -254,7 +242,6 @@ def normalize_skill(name: str) -> str:
 
 
 def find_skill_spans(text: str) -> list[tuple[int, int, str]]:
-    """(start, end, canonical) for every skill mention, longest match wins where mentions overlap."""
     spans = [(m.start(), m.end(), canonical) for canonical, pat in _compiled() for m in pat.finditer(text or "")]
     spans.sort(key=lambda t: (t[0], -(t[1] - t[0])))
     out: list[tuple[int, int, str]] = []
@@ -266,12 +253,11 @@ def find_skill_spans(text: str) -> list[tuple[int, int, str]]:
 
 
 def extract_skills(text: str, implied: bool = True) -> list[str]:
-    # With implied=True, Django also adds Python, MySQL adds SQL and so on
     found = {canonical for canonical, pat in _compiled() if pat.search(text or "")}
     if not implied:
         return sorted(found, key=str.lower)
     frontier = list(found)
-    while frontier:  # add implied skills transitively
+    while frontier:
         for implied in SKILL_IMPLIES.get(frontier.pop(), []):
             if implied not in found:
                 found.add(implied)
@@ -280,13 +266,11 @@ def extract_skills(text: str, implied: bool = True) -> list[str]:
 
 
 def skill_in_text(skill: str, text: str, resume_skills: set[str]) -> bool:
-    """True if a JD skill (canonical or free text) appears in the resume."""
     canonical = normalize_skill(skill)
     if canonical in resume_skills:
         return True
     if canonical in SKILL_TAXONOMY:
-        return False  # known skill, and the taxonomy scan did not find it
-    # Free-text JD skill not in the taxonomy (e.g. "payment gateways"): phrase search
+        return False
     words = [w for w in re.split(r"\W+", skill.lower()) if len(w) > 2]
     if not words:
         return False
@@ -297,7 +281,6 @@ _ALT_SPLIT = re.compile(r"\s+or\s+|\s+/\s+|\s*\|\s*", re.I)
 
 
 def split_alternatives(skill: str) -> tuple[str, ...]:
-    """'FastAPI or Django' -> ('FastAPI', 'Django'); 'CI/CD' stays one skill."""
     parts = [normalize_skill(p) for p in _ALT_SPLIT.split(skill or "") if p.strip()]
     return tuple(dict.fromkeys(p for p in parts if p))
 
@@ -312,7 +295,7 @@ def match_skills(resume_text: str, resume_skills: list[str],
         for alts in dict.fromkeys(split_alternatives(s) for s in skills if s):
             if not alts:
                 continue
-            label = " or ".join(alts)  # "FastAPI or Django": any one is enough
+            label = " or ".join(alts)
             hit = next((a for a in alts if skill_in_text(a, resume_text, have)), None)
             if hit:
                 matched.append(label if len(alts) == 1 else f"{hit} (for {label})")
@@ -342,12 +325,10 @@ def match_skills(resume_text: str, resume_skills: list[str],
 
 
 def base_skill(label: str) -> str:
-    """'FastAPI (for FastAPI or Django)' -> 'FastAPI'."""
     return label.split(" (for ")[0]
 
 
 def canonical_text(text: str) -> str:
-    """Append canonical skill names so lexical similarity sees aliases as the same word."""
     skills = extract_skills(text)
     tokens = " ".join(re.sub(r"[^A-Za-z0-9]+", "_", s) for s in skills)
     return f"{text}\n{tokens}"

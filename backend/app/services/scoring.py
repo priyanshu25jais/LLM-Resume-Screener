@@ -15,14 +15,12 @@ def normalize_weights(w: dict | None) -> dict:
 
 
 def experience_fit(years: float, required: float) -> float:
-    """X = min(1, years / required). No requirement -> 1.0 (freshers are not penalised)."""
     if not required or required <= 0:
         return 1.0
     return round(max(0.0, min(1.0, (years or 0) / required)), 4)
 
 
 def final_score(signals: dict, weights: dict) -> float:
-    """S = 100 * (wL*L + wK*K + wE*E + wX*X); every signal is in [0, 1]."""
     w = normalize_weights(weights)
     s = (w["llm"] * signals["llm"] + w["skills"] * signals["skills"]
          + w["semantic"] * signals["semantic"] + w["experience"] * signals["experience"])

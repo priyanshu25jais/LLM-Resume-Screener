@@ -6,7 +6,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-BASE_DIR = Path(__file__).resolve().parent.parent  # .../backend
+BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 
@@ -36,7 +36,6 @@ class Settings:
     APP_NAME = "LLM Resume Screening System"
     VERSION = "1.0.0"
 
-    # Storage
     DATA_DIR = Path(_env("DATA_DIR") or BASE_DIR / "data")
     DATABASE_URL = _env("DATABASE_URL") or f"sqlite:///{(DATA_DIR / 'screener.db').as_posix()}"
     UPLOAD_DIR = DATA_DIR / "uploads"
@@ -50,9 +49,7 @@ class Settings:
     LLM_TEMPERATURE = _float("LLM_TEMPERATURE", 0.1)
     LLM_TIMEOUT = _float("LLM_TIMEOUT", 90)
     MAX_CONCURRENCY = _int("MAX_CONCURRENCY", 3)
-    # Free API tiers limit requests per minute: 0 = no limit, e.g. 10 keeps calls at least 6 s apart
     LLM_REQUESTS_PER_MINUTE = _int("LLM_REQUESTS_PER_MINUTE", 0)
-    # Token limits: cap on reply length, and how much hidden "thinking" reasoning models may do
     LLM_MAX_OUTPUT_TOKENS = _int("LLM_MAX_OUTPUT_TOKENS", 4096)
     LLM_REASONING_EFFORT = _env("LLM_REASONING_EFFORT", "low").lower()
 
@@ -76,20 +73,17 @@ class Settings:
     EMBEDDING_PROVIDER = _env("EMBEDDING_PROVIDER", "auto").lower()
     LOCAL_EMBED_MODEL = _env("LOCAL_EMBED_MODEL", "all-MiniLM-L6-v2")
 
-    # Accounts
     SESSION_DAYS = _int("SESSION_DAYS", 7)
     ALLOW_REGISTRATION = _bool("ALLOW_REGISTRATION", True)
-    REQUIRE_APPROVAL = _bool("REQUIRE_APPROVAL", True)  # new recruiters wait for an admin to approve them
-    DEMO_LOGIN = _bool("DEMO_LOGIN", True)  # one-click demo recruiter; turn off if you put the app online
+    REQUIRE_APPROVAL = _bool("REQUIRE_APPROVAL", True)
+    DEMO_LOGIN = _bool("DEMO_LOGIN", True)
 
-    # Retention: a deleted recruiter's data is kept this many days (so a mistake can be undone), then purged
     DELETION_GRACE_DAYS = _int("DELETION_GRACE_DAYS", 30)
     AUDIT_RETENTION_DAYS = _int("AUDIT_RETENTION_DAYS", 365)
 
-    # Security flags for the admin to review (never automatic bans)
     FLAG_UPLOADS_PER_HOUR = _int("FLAG_UPLOADS_PER_HOUR", 100)
     FLAG_DUPLICATES_PER_DAY = _int("FLAG_DUPLICATES_PER_DAY", 10)
-    FLAG_FOREIGN_ACCESS = _int("FLAG_FOREIGN_ACCESS", 5)  # tries at other recruiters' IDs in 10 minutes
+    FLAG_FOREIGN_ACCESS = _int("FLAG_FOREIGN_ACCESS", 5)
 
     CORS_ORIGINS = [o.strip() for o in _env(
         "CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"

@@ -12,7 +12,6 @@ class ParseError(Exception):
     pass
 
 
-# Text extraction
 def extract_text(path: str | Path) -> str:
     path = Path(path)
     ext = path.suffix.lower()
@@ -43,7 +42,7 @@ def _pdf_text(path: Path) -> str:
         with pdfplumber.open(str(path)) as pdf:
             pages = [(p.extract_text(x_tolerance=1.5, y_tolerance=3) or "") for p in pdf.pages]
         text = "\n".join(pages)
-    except Exception:  # fall through to pypdf
+    except Exception:
         text = ""
     if len(text.strip()) < 50:
         try:
@@ -86,7 +85,6 @@ def clean_text(text: str) -> str:
     return text.strip()
 
 
-# Sections
 SECTION_ALIASES: dict[str, list[str]] = {
     "summary": ["summary", "professional summary", "profile", "profile summary", "career objective",
                 "objective", "about me", "about", "career summary", "overview"],
@@ -131,7 +129,6 @@ def split_sections(text: str) -> dict[str, str]:
     return {k: "\n".join(v).strip() for k, v in sections.items() if "\n".join(v).strip()}
 
 
-# Contacts & name
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
 PHONE_RE = re.compile(
     r"(?<![\d/])(?:\+?91[\s\-]?|0)?[6-9]\d{4}[\s\-]?\d{5}(?![\d/])"  # Indian mobile
@@ -172,7 +169,6 @@ def _title(s: str) -> str:
     return " ".join(w if w.isupper() and len(w) <= 3 else w.capitalize() for w in s.split())
 
 
-# Years of experience
 _MONTHS = {m: i for i, names in enumerate([
     ("jan", "january"), ("feb", "february"), ("mar", "march"), ("apr", "april"), ("may",),
     ("jun", "june"), ("jul", "july"), ("aug", "august"), ("sep", "sept", "september"),
@@ -203,17 +199,16 @@ def _to_month_index(point: str, is_end: bool, today: date) -> int | None:
         return int(m.group(2)) * 12 + int(m.group(1))
     m = re.match(r"((?:19|20)\d{2})", p)
     if m:
-        return int(m.group(1)) * 12 + 1  # year only: count from January
+        return int(m.group(1)) * 12 + 1
     return None
 
 
 def estimate_years_experience(text: str, sections: dict[str, str] | None = None,
                               today: date | None = None) -> float:
-    """Merge the date ranges in the experience section into total years (overlaps counted once)."""
     today = today or date.today()
     sections = sections or split_sections(text)
     scope = sections.get("experience")
-    if not scope:  # no experience heading: use everything except education
+    if not scope:
         scope = "\n".join(v for k, v in sections.items()
                           if k not in ("education", "certifications", "projects", "achievements"))
     intervals = []
@@ -242,7 +237,6 @@ def _merge(intervals):
     return out
 
 
-# One call to parse a resume
 def parse_resume(path: str | Path) -> dict:
     text = extract_text(path)
     sections = split_sections(text)

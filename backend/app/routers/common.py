@@ -12,7 +12,6 @@ from ..services.redactor import redact
 
 
 def _note_foreign_access(db, user: User, kind: str, obj_id: int) -> None:
-    # Asking for another recruiter's data is logged; repeated tries raise a flag for the admin
     tries = recent_count(db, "foreign_access", 10, target_id=user.id) + 1
     record(db, "security", "foreign_access", actor=user, target_id=user.id, outcome="denied",
            detail={"kind": kind, "id": obj_id}, flagged=tries == settings.FLAG_FOREIGN_ACCESS)
@@ -58,7 +57,6 @@ def job_stats(job: Job) -> dict:
 
 
 def token_stats(done: list[Candidate]) -> dict:
-    # Add up the token usage saved with each screened resume
     used = saved = calls = cached = fresh = 0
     for c in done:
         t = (c.evaluation or {}).get("tokens") or {}
@@ -75,7 +73,6 @@ def token_stats(done: list[Candidate]) -> dict:
 
 def job_out(job: Job) -> JobOut:
     out = JobOut.model_validate(job)
-    out.owner_name = job.owner.name if job.owner else ""
     out.stats = job_stats(job)
     return out
 

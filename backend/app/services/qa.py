@@ -14,7 +14,7 @@ from .llm.prompts import QA_SYSTEM, qa_user
 from .skills import extract_skills, find_skill_spans
 
 log = logging.getLogger("screener.qa")
-TOP_K = 8  # excerpts sent to the LLM; more excerpts = more tokens per question
+TOP_K = 8
 
 
 def label_of(c) -> str:
@@ -42,7 +42,7 @@ async def ask(db, job: Job, question: str) -> AskResponse:
     q_skills = set(extract_skills(question))
     ranked = []
     for (c, chunk), s in zip(passages, scores):
-        if q_skills:  # boost passages that literally contain the skills asked about
+        if q_skills:
             s += 0.15 * len(q_skills & set(extract_skills(chunk)))
         ranked.append((s, c, chunk))
     ranked.sort(key=lambda t: t[0], reverse=True)
@@ -56,7 +56,7 @@ async def ask(db, job: Job, question: str) -> AskResponse:
         if len(picked) >= TOP_K:
             break
 
-    if q_skills:  # keep candidates who actually have the skill asked about, when there are any
+    if q_skills:
         with_skill = [t for t in picked if q_skills & set(extract_skills(t[2]))]
         picked = with_skill or picked
 
@@ -77,7 +77,6 @@ async def ask(db, job: Job, question: str) -> AskResponse:
         except LLMError as exc:
             log.warning("Q&A LLM call failed: %s", exc)
 
-    # Offline: extractive answer from the best-matching candidates
     if q_skills:
         have = [c for c in done if q_skills & set(c.skills or [])]
         if have:
@@ -92,7 +91,6 @@ async def ask(db, job: Job, question: str) -> AskResponse:
 
 
 def _snippet(text: str, skills: set[str] | None = None, n: int = 260) -> str:
-    """A short excerpt, centred on the first mention of a skill the question asked about."""
     text = re.sub(r"\s+", " ", text).strip()
     if len(text) <= n:
         return text

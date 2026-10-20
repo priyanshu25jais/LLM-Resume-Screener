@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 
-// What each admin action means; serious ones need a reason and an explicit confirmation
 export const ACTIONS = {
   approve: { title: 'Approve recruiter', button: 'Approve', serious: false, text: 'They can log in and use recruiter features straight away.' },
   reactivate: { title: 'Reactivate account', button: 'Reactivate', serious: false, text: 'The account can log in again. A deleted account can only be restored before its data is purged.' },

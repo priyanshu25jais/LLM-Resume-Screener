@@ -24,7 +24,6 @@ _SENIORITY = [("Lead", r"\b(lead|principal|staff|architect|head)\b"), ("Senior",
 
 
 def _line_skills(line: str) -> list[str]:
-    """Skills named on one JD line; 'FastAPI or Django' becomes a single either-or requirement."""
     spans = find_skill_spans(line)
     used, out = set(), []
     for m in re.finditer(r"\s+or\s+", line, re.I):
@@ -48,7 +47,7 @@ _INTRO_HEADER = re.compile(r"^\s*(responsibilities|what you(?:'ll| will) do|the 
 def analyze_rule_based(title: str, description: str) -> JDRequirements:
     must: list[str] = []
     nice: list[str] = []
-    intro: list[str] = []  # skills mentioned outside any requirements list
+    intro: list[str] = []
     mode = "intro"
     edu_line = ""
     for line in description.split("\n"):
@@ -69,11 +68,10 @@ def analyze_rule_based(title: str, description: str) -> JDRequirements:
             target = must if mode == "must" else intro
         target.extend(s for s in skills if s not in target)
     must = list(dict.fromkeys(must))
-    if not must:  # JD without an explicit requirements list
+    if not must:
         must = list(dict.fromkeys(intro))
-    else:  # skills only named in the role description count as nice-to-have
+    else:
         nice = nice + [s for s in intro if s not in must and s not in nice]
-    # Very generic implied skills ("JavaScript" from "React") should not dominate must-haves
     must = must[:14]
     nice = [s for s in dict.fromkeys(nice) if s not in must][:12]
 
@@ -101,7 +99,6 @@ def analyze_rule_based(title: str, description: str) -> JDRequirements:
 
 
 def _tidy(req: JDRequirements) -> JDRequirements:
-    """Normalise skill names to the taxonomy and remove duplicates between the two lists."""
     def norm(s: str) -> str:
         return " or ".join(split_alternatives(s))
     must = list(dict.fromkeys(norm(s) for s in req.must_have_skills if norm(s)))
@@ -110,7 +107,6 @@ def _tidy(req: JDRequirements) -> JDRequirements:
 
 
 async def analyze_jd(title: str, description: str) -> tuple[JDRequirements, str]:
-    """Return (requirements, analysed_by)."""
     llm = get_llm()
     if llm.available:
         try:

@@ -10,7 +10,3 @@ pypdf>=4.0
 python-docx>=1.1
 scikit-learn>=1.4
 numpy>=1.26
-pytest>=8.0
-
-# Optional: local semantic embeddings without an API key (downloads ~90 MB model on first run)
-# sentence-transformers>=3.0

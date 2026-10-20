@@ -26,7 +26,6 @@ _PHOTO = re.compile(r"\[?(?:photo|photograph|profile picture)\]?", re.I)
 
 
 def redact(text: str, name: str = "") -> tuple[str, dict]:
-    """Return (redacted_text, counts) where counts says how many items of each kind were removed."""
     counts: dict[str, int] = {}
 
     def sub(pattern, repl, s, label):
@@ -50,7 +49,7 @@ def redact(text: str, name: str = "") -> tuple[str, dict]:
         full = re.compile(r"\b" + r"\s+".join(map(re.escape, parts)) + r"\b", re.I) if parts else None
         if full:
             out = sub(full, "[CANDIDATE]", out, "name")
-        for p in parts:  # stray first/last name mentions
+        for p in parts:
             if len(p) >= 3:
                 out = sub(re.compile(r"\b" + re.escape(p) + r"\b", re.I), "[CANDIDATE]", out, "name")
 

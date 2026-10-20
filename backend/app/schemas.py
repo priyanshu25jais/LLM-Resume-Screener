@@ -10,11 +10,9 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 Recommendation = Literal["Strong Fit", "Good Fit", "Consider", "Not a Fit"]
 
 
-# LLM contracts
 class JDRequirements(BaseModel):
-    """Structured version of a job description, produced by the JD analyser."""
     role_title: str = ""
-    seniority: str = ""  # e.g. Junior / Mid / Senior / Lead
+    seniority: str = ""
     min_years_experience: float = 0
     must_have_skills: list[str] = Field(default_factory=list)
     nice_to_have_skills: list[str] = Field(default_factory=list)
@@ -48,7 +46,6 @@ def _clamp100(v) -> int:
 
 
 class ResumeEvaluation(BaseModel):
-    """What the LLM returns for one resume against one job."""
     overall_score: int = Field(ge=0, le=100)
     skills_score: int = Field(ge=0, le=100)
     experience_score: int = Field(ge=0, le=100)
@@ -91,10 +88,9 @@ class ResumeEvaluation(BaseModel):
 
 class QAAnswer(BaseModel):
     answer: str
-    cited: list[str] = Field(default_factory=list)  # candidate labels such as "C3"
+    cited: list[str] = Field(default_factory=list)
 
 
-# API bodies
 class Weights(BaseModel):
     llm: float = 0.45
     skills: float = 0.25
@@ -125,7 +121,6 @@ class JobOut(BaseModel):
     blind_mode: bool
     analysed_by: str
     created_at: datetime
-    owner_name: str = ""
     stats: dict = Field(default_factory=dict)
 
 
@@ -192,7 +187,6 @@ class AskResponse(BaseModel):
     tokens: int = 0
 
 
-# Accounts
 def _clean_email(v: str) -> str:
     v = (v or "").strip().lower()
     if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", v):

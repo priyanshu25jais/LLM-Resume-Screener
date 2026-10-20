@@ -5,7 +5,6 @@ export default function Band({ value, large = false }) {
   return <span className={`band ${BAND_CLASS[value] || 'not'}${large ? ' lg' : ''}`}>{value}</span>
 }
 
-// "Candidate 9" -> "C9", "Aarav Sharma" -> "AS"
 export function initials(name = '') {
   const m = name.match(/^Candidate (\d+)$/)
   if (m) return `C${m[1]}`
@@ -16,7 +15,6 @@ export function Avatar({ name, top = false, large = false }) {
   return <span className={`avatar${top ? ' top' : ''}${large ? ' lg' : ''}`} aria-hidden="true">{initials(name)}</span>
 }
 
-// One bar showing how many candidates fall in each band
 export function MiniDist({ counts, total, className = '' }) {
   const order = [['Strong Fit', 'b-strong'], ['Good Fit', 'b-good'], ['Consider', 'b-consider'], ['Not a Fit', 'b-not']]
   const label = order.map(([b]) => `${b}: ${counts?.[b] || 0}`).join(', ')

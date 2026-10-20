@@ -73,7 +73,6 @@ def update_job(job_id: int, body: JobUpdate, db: Session = Depends(get_db), user
 @router.put("/{job_id}/requirements", response_model=JobOut)
 def update_requirements(job_id: int, body: JDRequirements, db: Session = Depends(get_db),
                         user: User = Depends(recruiter_user)):
-    """Let the recruiter correct the extracted requirements. Call /rescreen afterwards."""
     job = get_job_or_404(db, job_id, user)
     job.requirements = body.model_dump()
     job.analysed_by = f"{job.analysed_by} + edited" if "edited" not in job.analysed_by else job.analysed_by
@@ -112,7 +111,6 @@ def _recent_total(db, action: str, minutes: int, user_id: int) -> int:
 
 
 def note_upload(db, user: User, added: list, skipped: list) -> None:
-    """Log upload counts (never file names or content) and flag unusual patterns for the admin to review."""
     before = _recent_total(db, "upload", 60, user.id)
     if added:
         crossed = before < settings.FLAG_UPLOADS_PER_HOUR <= before + len(added)
@@ -130,7 +128,6 @@ def note_upload(db, user: User, added: list, skipped: list) -> None:
 
 
 def store_resume_files(db, job: Job, items: list[tuple[str, bytes]]) -> tuple[list, list, list[int]]:
-    """Validate, de-duplicate and save uploaded files; create queued candidates."""
     folder = settings.UPLOAD_DIR / f"job_{job.id}"
     folder.mkdir(parents=True, exist_ok=True)
     known = {c.file_hash for c in job.candidates}

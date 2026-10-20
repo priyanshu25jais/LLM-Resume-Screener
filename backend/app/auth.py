@@ -39,7 +39,7 @@ def _token_hash(token: str) -> str:
 def start_session(db, user: User, response: Response) -> None:
     token = secrets.token_urlsafe(32)
     now = int(time.time())
-    db.query(UserSession).filter(UserSession.expires_at < now).delete()  # clear old logins
+    db.query(UserSession).filter(UserSession.expires_at < now).delete()
     db.add(UserSession(token_hash=_token_hash(token), user_id=user.id,
                        expires_at=now + settings.SESSION_DAYS * 86400))
     db.commit()

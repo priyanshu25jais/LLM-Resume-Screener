@@ -17,7 +17,7 @@ if settings.DATABASE_URL.startswith("sqlite"):
     @event.listens_for(engine, "connect")
     def _sqlite_pragmas(dbapi_conn, _record):
         cur = dbapi_conn.cursor()
-        cur.execute("PRAGMA journal_mode=WAL")  # readers don't block the background writer
+        cur.execute("PRAGMA journal_mode=WAL")
         cur.execute("PRAGMA foreign_keys=ON")
         cur.close()
 
@@ -29,7 +29,7 @@ class Base(DeclarativeBase):
 
 
 def init_db() -> None:
-    from . import models  # registers the tables
+    from . import models
     Base.metadata.create_all(bind=engine)
     _add_missing_columns()
 
@@ -58,8 +58,7 @@ def _add_missing_columns() -> None:
         if "jobs.owner_id" in added:
             conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS ix_jobs_owner_id ON jobs (owner_id)")
         if "users.status" in added:
-            # The previous version made the first sign-up an admin. Admins may no longer own jobs,
-            # so an old admin who owns jobs becomes a recruiter and keeps them.
+            # Admins can no longer own jobs, so an old admin who owns jobs becomes a recruiter
             n = conn.exec_driver_sql(
                 "UPDATE users SET role = 'recruiter' WHERE role = 'admin' AND id IN "
                 "(SELECT DISTINCT owner_id FROM jobs WHERE owner_id IS NOT NULL)").rowcount

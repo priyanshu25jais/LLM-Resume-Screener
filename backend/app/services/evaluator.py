@@ -57,7 +57,6 @@ async def evaluate_with_llm(resume_text: str, requirements: dict, jd_text: str, 
     return result, used, tokens
 
 
-# Rule-based evaluator, used when no LLM is configured or every provider fails
 _DEGREE = re.compile(r"\b(b\.?\s?tech|b\.?\s?e\b|bachelor|bca|b\.?sc|bs\b|m\.?\s?tech|mca|master|m\.?sc|ms\b|"
                      r"mba|ph\.?d|diploma)", re.I)
 _RELEVANT_FIELD = re.compile(r"computer|information technology|\bit\b|software|data science|statistics|"
@@ -102,7 +101,7 @@ def evaluate_rule_based(sections: dict, requirements: dict, skill_match: dict,
         projects_score = 55 if relevance > 0.5 else 30
 
     overall = 0.4 * skills_score + 0.3 * experience_score + 0.2 * projects_score + 0.1 * education_score
-    overall = 0.85 * overall + 15 * semantic  # a little credit for overall topical fit
+    overall = 0.85 * overall + 15 * semantic
     if m_total and must_cov < 0.5:
         overall *= 0.8
     overall = max(0, min(100, overall))
@@ -159,7 +158,6 @@ def evaluate_rule_based(sections: dict, requirements: dict, skill_match: dict,
 
 async def evaluate(*, resume_text: str, sections: dict, requirements: dict, jd_text: str,
                    skill_match: dict, years: float, semantic: float, db=None) -> tuple[ResumeEvaluation, str, dict]:
-    """Returns (evaluation, who evaluated it, token usage). Uses the LLM if one is set up, else the rules."""
     llm = get_llm()
     if llm.available:
         signals = {

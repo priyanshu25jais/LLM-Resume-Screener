@@ -1,6 +1,5 @@
 import { SIGNALS } from '../api.js'
 
-// Sliders for the four scoring weights, shown as % of the final score
 export default function WeightsEditor({ value, onChange }) {
   const total = SIGNALS.reduce((s, x) => s + (Number(value[x.key]) || 0), 0) || 1
   return (

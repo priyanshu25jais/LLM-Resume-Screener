@@ -1,4 +1,3 @@
-// All calls to the FastAPI backend
 async function request(path, { method = 'GET', body, form } = {}) {
   const opts = { method, headers: {} }
   if (form) opts.body = form
@@ -72,23 +71,19 @@ export const DECISIONS = {
   rejected: 'Rejected',
 }
 
-// "FastAPI (for FastAPI or Django)" -> "FastAPI"
 export const skillName = (s) => s.split(' (for ')[0]
 
-// Readable name of who did the analysis
 export function byWhom(label = '') {
   if (label === 'rule-based') return 'the rule-based evaluator (offline mode, no LLM key)'
   if (label.startsWith('rule-based')) return 'the rule-based evaluator'
   return label.replace(/:/, ' ')
 }
 
-// 41230 -> "41.2k", 950 -> "950"
 export function formatTokens(n = 0) {
   if (n >= 10000) return `${(n / 1000).toFixed(1)}k`
   return n.toLocaleString('en-IN')
 }
 
-// true when every LLM provider failed and the rules were used instead
 export const llmFellBack = (label = '') => label.startsWith('rule-based (')
 
 // Server times are UTC; older rows have no timezone mark, so add one before formatting

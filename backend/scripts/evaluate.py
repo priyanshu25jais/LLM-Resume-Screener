@@ -52,7 +52,6 @@ def spearman(xs: list[float], ys: list[float]) -> float:
 
 
 def average_precision(rel: list[int]) -> float:
-    """Mean of precision at each relevant (label >= 1) position."""
     hits, total = 0, 0.0
     for i, r in enumerate(rel, 1):
         if r >= 1:
@@ -66,7 +65,7 @@ def metrics(scored: list[tuple[str, float]], labels: dict[str, int]) -> dict:
     rel = [labels[f] for f, _ in order]
     n_strong = sum(v == 2 for v in labels.values()) or 1
     return {
-        "R-Precision": sum(r == 2 for r in rel[:n_strong]) / n_strong,  # strong fits in the top R
+        "R-Precision": sum(r == 2 for r in rel[:n_strong]) / n_strong,
         "MAP": average_precision(rel),
         "NDCG@5": ndcg_at_k(rel, list(labels.values()), 5),
         "Spearman": spearman([s for _, s in scored], [labels[f] for f, _ in scored]),
@@ -91,6 +90,14 @@ def main():
     results, per_job_rows = {}, {}
 
     with TestClient(app) as cl:
+        from app.auth import hash_password
+        from app.database import SessionLocal
+        from app.models import User
+        with SessionLocal() as db:
+            db.add(User(name="Evaluator", email="eval@local.test", password_hash=hash_password("evaluate-123"),
+                        role="recruiter", status="active"))
+            db.commit()
+        cl.post("/api/auth/login", json={"email": "eval@local.test", "password": "evaluate-123"})
         health = cl.get("/api/health").json()
         print(f"LLM: {health['llm_provider']}:{health['llm_model']} | embeddings: {health['embedding_backend']}")
         for jd_file, labels in labels_all.items():

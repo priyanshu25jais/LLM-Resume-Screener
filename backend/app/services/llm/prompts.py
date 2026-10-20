@@ -12,7 +12,6 @@ RESUME_CHARS = 9000
 
 
 def compact(text: str, limit: int) -> str:
-    """Strip extra spaces, blank lines and repeated lines (page headers etc.) to save tokens."""
     seen, lines = set(), []
     for line in (text or "").splitlines():
         line = re.sub(r"[ \t]+", " ", line).strip()
@@ -28,7 +27,6 @@ def compact(text: str, limit: int) -> str:
 
 
 def to_json(data: dict) -> str:
-    # Minified JSON without empty values: same meaning, fewer tokens
     clean = {k: v for k, v in data.items() if v not in ("", None, [], {})}
     return json.dumps(clean, ensure_ascii=False, separators=(",", ":"))
 
