@@ -44,7 +44,7 @@ def start_session(db, user: User, response: Response) -> None:
                        expires_at=now + settings.SESSION_DAYS * 86400))
     db.commit()
     response.set_cookie(COOKIE, token, max_age=settings.SESSION_DAYS * 86400, httponly=True,
-                        samesite="lax", path="/")
+                        samesite="lax", path="/", secure=settings.COOKIE_SECURE)
 
 
 def end_session(db, request: Request, response: Response) -> None:

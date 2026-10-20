@@ -77,6 +77,11 @@ class Settings:
     ALLOW_REGISTRATION = _bool("ALLOW_REGISTRATION", True)
     REQUIRE_APPROVAL = _bool("REQUIRE_APPROVAL", True)
     DEMO_LOGIN = _bool("DEMO_LOGIN", True)
+    COOKIE_SECURE = _bool("COOKIE_SECURE", False)  # true when served over https
+    # For hosts without a shell: the admin is created at start-up if none exists
+    ADMIN_NAME = _env("ADMIN_NAME", "Admin")
+    ADMIN_EMAIL = _env("ADMIN_EMAIL")
+    ADMIN_PASSWORD = _env("ADMIN_PASSWORD")
 
     DELETION_GRACE_DAYS = _int("DELETION_GRACE_DAYS", 30)
     AUDIT_RETENTION_DAYS = _int("AUDIT_RETENTION_DAYS", 365)

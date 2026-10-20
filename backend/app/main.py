@@ -15,11 +15,12 @@ from .database import init_db
 from .database import SessionLocal
 from .models import User
 from .routers import admin, auth, candidates, jobs, system
-from .services.accounts import purge_due
+from .services.accounts import create_admin, purge_due
 from .services.embeddings import get_embedder
 from .services.llm import get_llm
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+log = logging.getLogger("screener")
 
 
 @asynccontextmanager
@@ -28,8 +29,13 @@ async def lifespan(_app: FastAPI):
     with SessionLocal() as db:
         purge_due(db)
         if not db.query(User).filter(User.role == "admin", User.status == "active").first():
-            logging.getLogger("screener").warning(
-                "No admin account yet. Create one from the backend folder: python scripts/create_admin.py")
+            if settings.ADMIN_EMAIL and settings.ADMIN_PASSWORD:
+                try:
+                    create_admin(db, settings.ADMIN_NAME, settings.ADMIN_EMAIL, settings.ADMIN_PASSWORD)
+                except ValueError as exc:
+                    log.error("Could not create the admin from ADMIN_EMAIL: %s", exc)
+            else:
+                log.warning("No admin account yet. Create one from the backend folder: python scripts/create_admin.py")
     get_llm()
     get_embedder()
     yield
