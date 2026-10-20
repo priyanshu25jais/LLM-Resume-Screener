@@ -47,6 +47,18 @@ To edit the React code: `cd frontend`, `npm install`, `npm run dev`, then `npm r
 
 For a quick look, click **Try the demo recruiter account** on the login page.
 
+## Deploy (Render, free plan)
+
+1. On render.com: **New → Web Service**, connect this GitHub repo.
+2. Leave Root Directory empty. Build Command `pip install -r backend/requirements.txt`,
+   Start Command `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`, Instance Type **Free**.
+   One service runs both the API and the website (the built `frontend/dist`).
+3. Environment variables: `GEMINI_API_KEY`, `GROQ_API_KEY`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`,
+   `COOKIE_SECURE=true`, `MAX_CONCURRENCY=1`, `LLM_REQUESTS_PER_MINUTE=10`.
+
+The free plan sleeps after 15 minutes without visitors and starts with an empty database after it
+wakes up or redeploys. The admin is created again from `ADMIN_EMAIL` / `ADMIN_PASSWORD` each time.
+
 ## Folder structure
 
 ```
@@ -62,3 +74,4 @@ frontend/          React app (src) and the built version (dist)
 sample_data/       3 sample job descriptions and 15 made-up resumes
 ```
 
+API docs: http://localhost:8000/docs while the server is running.
