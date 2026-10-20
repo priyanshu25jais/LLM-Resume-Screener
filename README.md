@@ -74,4 +74,3 @@ frontend/          React app (src) and the built version (dist)
 sample_data/       3 sample job descriptions and 15 made-up resumes
 ```
 
-API docs: http://localhost:8000/docs while the server is running.
